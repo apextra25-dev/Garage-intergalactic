@@ -1,0 +1,2423 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛸 Sodhi's Intergalactic Garage</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Exo+2:wght@300;400;500;600;700;800&family=Rajdhani:wght@300;400;500;600;700&display=swap');
+
+        /* ==================== THEMES ==================== */
+        [data-theme="dark"] {
+            --bg-primary: #030311;
+            --bg-secondary: #080822;
+            --bg-tertiary: #0c0c33;
+            --bg-card: rgba(12, 12, 55, 0.65);
+            --bg-card-hover: rgba(20, 20, 75, 0.8);
+            --bg-solid: #0e0e3a;
+            --glass-border: rgba(255, 255, 255, 0.06);
+            --glass-light: rgba(255, 255, 255, 0.02);
+            --text-primary: #e4e4ff;
+            --text-secondary: #8888bb;
+            --text-muted: #555580;
+            --accent-1: #00ff9d;
+            --accent-2: #ff00ff;
+            --accent-3: #00c8ff;
+            --accent-4: #ffaa00;
+            --accent-5: #ff3366;
+            --accent-6: #aa55ff;
+            --glow-1: 0, 255, 157;
+            --glow-2: 255, 0, 255;
+            --glow-3: 0, 200, 255;
+            --glow-4: 255, 170, 0;
+            --particle-rgb: 0, 255, 157;
+            --nebula-1: rgba(0, 255, 157, 0.07);
+            --nebula-2: rgba(255, 0, 255, 0.05);
+            --nebula-3: rgba(0, 200, 255, 0.06);
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #f2f2ff;
+            --bg-secondary: #e5e5f8;
+            --bg-tertiary: #dcdcf2;
+            --bg-card: rgba(255, 255, 255, 0.85);
+            --bg-card-hover: rgba(255, 255, 255, 0.95);
+            --bg-solid: #ffffff;
+            --glass-border: rgba(0, 0, 80, 0.06);
+            --glass-light: rgba(0, 0, 80, 0.02);
+            --text-primary: #1a1a40;
+            --text-secondary: #5a5a88;
+            --text-muted: #8888aa;
+            --accent-1: #00885a;
+            --accent-2: #aa00aa;
+            --accent-3: #0077bb;
+            --accent-4: #bb7700;
+            --accent-5: #cc2244;
+            --accent-6: #7733bb;
+            --glow-1: 0, 136, 90;
+            --glow-2: 170, 0, 170;
+            --glow-3: 0, 119, 187;
+            --glow-4: 187, 119, 0;
+            --particle-rgb: 0, 100, 60;
+            --nebula-1: rgba(0, 136, 90, 0.04);
+            --nebula-2: rgba(170, 0, 170, 0.03);
+            --nebula-3: rgba(0, 119, 187, 0.04);
+        }
+
+        [data-theme="retro"] {
+            --bg-primary: #0a0015;
+            --bg-secondary: #150028;
+            --bg-tertiary: #20003d;
+            --bg-card: rgba(25, 0, 50, 0.75);
+            --bg-card-hover: rgba(40, 0, 75, 0.85);
+            --bg-solid: #1a0035;
+            --glass-border: rgba(255, 110, 199, 0.08);
+            --glass-light: rgba(255, 110, 199, 0.02);
+            --text-primary: #ffddee;
+            --text-secondary: #cc88bb;
+            --text-muted: #884477;
+            --accent-1: #ff6ec7;
+            --accent-2: #ffd700;
+            --accent-3: #00ffff;
+            --accent-4: #ff4500;
+            --accent-5: #ff1493;
+            --accent-6: #9b59b6;
+            --glow-1: 255, 110, 199;
+            --glow-2: 255, 215, 0;
+            --glow-3: 0, 255, 255;
+            --glow-4: 255, 69, 0;
+            --particle-rgb: 255, 110, 199;
+            --nebula-1: rgba(255, 110, 199, 0.07);
+            --nebula-2: rgba(255, 215, 0, 0.05);
+            --nebula-3: rgba(0, 255, 255, 0.06);
+        }
+
+        /* ==================== RESET ==================== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: background 0.5s, color 0.5s;
+            min-height: 100vh;
+        }
+
+        /* ==================== CANVAS ==================== */
+        #spaceCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* ==================== NEBULA ==================== */
+        .nebula-wrap {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .neb-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(100px);
+            animation: nebMove 25s ease-in-out infinite;
+        }
+
+        .neb-orb:nth-child(1) {
+            width: 500px; height: 500px;
+            background: var(--nebula-1);
+            top: -10%; left: -5%;
+            animation-duration: 30s;
+        }
+
+        .neb-orb:nth-child(2) {
+            width: 400px; height: 400px;
+            background: var(--nebula-2);
+            bottom: -5%; right: -5%;
+            animation-duration: 25s;
+            animation-delay: -8s;
+        }
+
+        .neb-orb:nth-child(3) {
+            width: 350px; height: 350px;
+            background: var(--nebula-3);
+            top: 35%; left: 35%;
+            animation-duration: 28s;
+            animation-delay: -14s;
+        }
+
+        @keyframes nebMove {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(50px, -30px) scale(1.12); }
+            66% { transform: translate(-30px, 40px) scale(0.92); }
+        }
+
+        /* ==================== FLOATERS ==================== */
+        .float-wrap {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .float-item {
+            position: absolute;
+            opacity: 0;
+            animation: floatDrift linear infinite;
+        }
+
+        @keyframes floatDrift {
+            0% { transform: translateX(-80px) rotate(0deg); opacity: 0; }
+            8% { opacity: 0.25; }
+            92% { opacity: 0.25; }
+            100% { transform: translateX(calc(100vw + 80px)) rotate(360deg); opacity: 0; }
+        }
+
+        /* ==================== NAV ==================== */
+        .topnav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            padding: 12px 0;
+            transition: all 0.4s;
+        }
+
+        .topnav.scrolled {
+            background: var(--bg-card);
+            backdrop-filter: blur(25px);
+            border-bottom: 1px solid var(--glass-border);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .topnav-inner {
+            max-width: 1250px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 25px;
+        }
+
+        .logo-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 40px; height: 40px;
+            border-radius: 11px;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 0 20px rgba(var(--glow-1), 0.35);
+            animation: logoBeat 3s ease-in-out infinite;
+        }
+
+        @keyframes logoBeat {
+            0%, 100% { box-shadow: 0 0 15px rgba(var(--glow-1), 0.3); }
+            50% { box-shadow: 0 0 35px rgba(var(--glow-1), 0.6); }
+        }
+
+        .logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 800;
+            font-size: 0.95rem;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 2px;
+        }
+
+        .logo-sub {
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .nav-group {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+        }
+
+        .back-button {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            padding: 7px 14px;
+            border: 1px solid var(--accent-5);
+            background: rgba(255, 51, 102, 0.08);
+            color: var(--accent-5);
+            border-radius: 9px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.58rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            transition: all 0.3s;
+            margin-right: 6px;
+        }
+
+        .back-button.visible { display: flex; }
+
+        .back-button:hover {
+            background: var(--accent-5);
+            color: #fff;
+        }
+
+        .nav-button {
+            font-family: 'Orbitron', sans-serif;
+            padding: 9px 18px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass-light);
+            color: var(--text-secondary);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-button::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 2px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-3));
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .nav-button:hover::after,
+        .nav-button.on::after { transform: scaleX(1); }
+
+        .nav-button:hover,
+        .nav-button.on {
+            color: var(--accent-1);
+            border-color: rgba(var(--glow-1), 0.25);
+            background: rgba(var(--glow-1), 0.04);
+            box-shadow: 0 0 18px rgba(var(--glow-1), 0.12);
+            transform: translateY(-2px);
+        }
+
+        /* ==================== VIEW SYSTEM ==================== */
+        .appview {
+            display: none;
+            position: relative;
+            z-index: 2;
+            padding-top: 80px;
+            min-height: 100vh;
+        }
+
+        .appview.show {
+            display: block;
+            animation: fadeUp 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .appview-body {
+            max-width: 1250px;
+            margin: 0 auto;
+            padding: 20px 25px 50px;
+        }
+
+        /* ==================== HEADINGS ==================== */
+        .sec-head {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .sec-head .sh-icon {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 10px;
+            animation: bobble 3s ease-in-out infinite;
+        }
+
+        @keyframes bobble {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .sec-head .sh-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(1.5rem, 4vw, 2.5rem);
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+            letter-spacing: 3px;
+        }
+
+        .sec-head .sh-sub {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            letter-spacing: 4px;
+            margin-top: 8px;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        .sec-head .sh-line {
+            display: block;
+            width: 90px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-3));
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+
+        /* Sub heading */
+        .sub-head {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            color: var(--accent-3);
+            text-align: center;
+            margin-bottom: 22px;
+            letter-spacing: 3px;
+        }
+
+        /* ==================== CARDS ==================== */
+        .gc {
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gc:hover {
+            border-color: rgba(var(--glow-1), 0.18);
+            box-shadow: 0 0 25px rgba(var(--glow-1), 0.06), 0 10px 35px rgba(0,0,0,0.25);
+            transform: translateY(-3px);
+        }
+
+        /* ==================== GRIDS ==================== */
+        .g3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        /* Separator */
+        .sep {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+            margin: 45px 0;
+        }
+
+        /* ======================================================== */
+        /*                SECTION 1: GARAGE                         */
+        /* ======================================================== */
+
+        .hero {
+            text-align: center;
+            padding: 45px 15px 25px;
+            margin-bottom: 40px;
+        }
+
+        .ufo-box {
+            position: relative;
+            width: 160px; height: 160px;
+            margin: 0 auto 22px;
+        }
+
+        .ufo-glow {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(var(--glow-1), 0.25), transparent 65%);
+            animation: glowPulse 3.5s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { transform: scale(1); opacity: 0.35; }
+            50% { transform: scale(1.35); opacity: 0.65; }
+        }
+
+        .ufo-emoji {
+            position: relative;
+            font-size: 5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            z-index: 2;
+            animation: ufoFloat 4s ease-in-out infinite;
+            filter: drop-shadow(0 0 25px rgba(var(--glow-1), 0.4));
+        }
+
+        @keyframes ufoFloat {
+            0%, 100% { transform: translateY(0) rotate(-3deg); }
+            50% { transform: translateY(-18px) rotate(3deg); }
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(2rem, 6vw, 4.2rem);
+            font-weight: 900;
+            line-height: 1.15;
+            margin-bottom: 15px;
+        }
+
+        .hero h1 .hl1 {
+            display: block;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3), var(--accent-1));
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmer 4s ease infinite;
+        }
+
+        .hero h1 .hl2 {
+            display: block;
+            font-size: 0.42em;
+            background: linear-gradient(135deg, var(--accent-2), var(--accent-5));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 7px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero-tag {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            letter-spacing: 3px;
+            margin-bottom: 10px;
+        }
+
+        .hero-slogan {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.05rem;
+            color: var(--accent-4);
+            text-shadow: 0 0 20px rgba(var(--glow-4), 0.35);
+            animation: sloganBeat 2.5s ease-in-out infinite;
+            margin-bottom: 28px;
+        }
+
+        @keyframes sloganBeat {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.55; }
+        }
+
+        /* Hero 3 info */
+        .hero-info {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .hi-box {
+            padding: 16px 12px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .hi-box .hi-em { font-size: 1.3rem; margin-bottom: 5px; }
+
+        .hi-box .hi-lab {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .hi-box .hi-val {
+            font-size: 0.85rem;
+            color: var(--accent-1);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* Gallery cards */
+        .gal-card {
+            border-radius: 18px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .gal-vis {
+            height: 230px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .gal-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+        }
+
+        .gbg1 { background: linear-gradient(135deg, #070720, #0f0735, #071828); }
+        .gbg2 { background: linear-gradient(135deg, #1a0725, #250718, #071a25); }
+        .gbg3 { background: linear-gradient(135deg, #072518, #181807, #071825); }
+
+        .gal-stars span {
+            position: absolute;
+            width: 2px; height: 2px;
+            background: #fff;
+            border-radius: 50%;
+            animation: twink 2s ease-in-out infinite;
+        }
+
+        @keyframes twink {
+            0%, 100% { opacity: 0.15; }
+            50% { opacity: 1; }
+        }
+
+        .gal-em {
+            font-size: 4rem;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 4px 20px rgba(0,0,0,0.5));
+            transition: transform 0.3s;
+        }
+
+        .gal-card:hover .gal-em {
+            transform: scale(1.12) rotate(4deg);
+        }
+
+        .gal-badge {
+            position: absolute;
+            top: 12px; right: 12px;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.48rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            z-index: 3;
+            color: var(--bg-primary);
+        }
+
+        .b-green { background: var(--accent-1); }
+        .b-pink { background: var(--accent-2); color: #fff; }
+        .b-blue { background: var(--accent-3); }
+
+        .gal-overlay {
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%;
+            padding: 40px 18px 15px;
+            background: linear-gradient(transparent, rgba(0,0,0,0.9));
+            z-index: 3;
+        }
+
+        .gal-overlay h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.82rem;
+            color: var(--accent-1);
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .gal-overlay p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.75rem;
+            line-height: 1.3;
+        }
+
+        /* Gallery 3 sub items */
+        .gal-subs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .gal-sub {
+            padding: 12px 8px;
+            text-align: center;
+            border-right: 1px solid var(--glass-border);
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .gal-sub:last-child { border-right: none; }
+        .gal-sub:hover { background: rgba(var(--glow-1), 0.04); }
+
+        .gal-sub .gs-em { font-size: 1.3rem; margin-bottom: 3px; }
+
+        .gal-sub .gs-lab {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.48rem;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        /* Stats */
+        .stat-box {
+            padding: 28px 15px;
+            text-align: center;
+            border-radius: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-box .sb-bg {
+            position: absolute;
+            font-size: 4.5rem;
+            opacity: 0.04;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .stat-box .sb-em {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-box .sb-num {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+            z-index: 2;
+        }
+
+        .stat-box .sb-lab {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-top: 4px;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ======================================================== */
+        /*                SECTION 2: SERVICES                       */
+        /* ======================================================== */
+
+        .svc-card {
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .svc-banner {
+            height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .svc-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+
+        .sbg-a { background: linear-gradient(135deg, #071a10, #0f250f, #071820); }
+        .sbg-b { background: linear-gradient(135deg, #0f0720, #1a0730, #200720); }
+        .sbg-c { background: linear-gradient(135deg, #201808, #1a1008, #182008); }
+
+        .svc-em {
+            font-size: 3.5rem;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 4px 20px rgba(0,0,0,0.5));
+            transition: transform 0.3s;
+        }
+
+        .svc-card:hover .svc-em {
+            transform: scale(1.1) translateY(-4px);
+        }
+
+        .svc-ribbon {
+            position: absolute;
+            top: 10px; left: 10px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.46rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            z-index: 3;
+            background: var(--accent-1);
+            color: var(--bg-primary);
+        }
+
+        .svc-body {
+            padding: 18px;
+        }
+
+        .svc-body h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.92rem;
+            color: var(--accent-1);
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+
+        .svc-body .svc-desc {
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            line-height: 1.45;
+            margin-bottom: 12px;
+        }
+
+        .svc-btn {
+            display: inline-block;
+            padding: 8px 18px;
+            border: 1px solid var(--accent-1);
+            background: transparent;
+            color: var(--accent-1);
+            border-radius: 9px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.55rem;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .svc-btn:hover {
+            background: var(--accent-1);
+            color: var(--bg-primary);
+            box-shadow: 0 0 20px rgba(var(--glow-1), 0.3);
+        }
+
+        /* Service mini list */
+        .svc-minis {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .svc-mini {
+            padding: 12px 8px;
+            text-align: center;
+            border-right: 1px solid var(--glass-border);
+            transition: background 0.3s;
+        }
+
+        .svc-mini:last-child { border-right: none; }
+        .svc-mini:hover { background: rgba(var(--glow-1), 0.03); }
+
+        .svc-mini .sm-em { font-size: 1.3rem; margin-bottom: 3px; }
+
+        .svc-mini .sm-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.48rem;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+        }
+
+        .svc-mini .sm-pr {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.6rem;
+            color: var(--accent-4);
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        /* ======================================================== */
+        /*                SECTION 3: SETTINGS                       */
+        /* ======================================================== */
+
+        .thm-card {
+            padding: 25px 16px;
+            border-radius: 18px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid var(--glass-border);
+            transition: all 0.3s;
+        }
+
+        .thm-card.picked {
+            border-color: var(--accent-1);
+            box-shadow: 0 0 30px rgba(var(--glow-1), 0.18);
+        }
+
+        .thm-card.picked::after {
+            content: '✓';
+            position: absolute;
+            top: 8px; right: 10px;
+            background: var(--accent-1);
+            color: var(--bg-primary);
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 900;
+        }
+
+        .thm-card .tc-em { font-size: 2.3rem; margin-bottom: 8px; display: block; }
+
+        .thm-card .tc-dots {
+            display: flex;
+            gap: 5px;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .thm-card .tc-dots span {
+            width: 22px; height: 5px;
+            border-radius: 3px;
+        }
+
+        .thm-card h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.78rem;
+            margin-bottom: 4px;
+            letter-spacing: 2px;
+        }
+
+        .thm-card p {
+            color: var(--text-secondary);
+            font-size: 0.72rem;
+            line-height: 1.3;
+        }
+
+        /* Pref cards */
+        .prf-card {
+            padding: 20px;
+            border-radius: 16px;
+        }
+
+        .prf-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 7px;
+        }
+
+        .prf-top h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.72rem;
+            color: var(--accent-3);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .prf-top h4 .pem { font-size: 1rem; }
+
+        .prf-desc {
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            line-height: 1.4;
+        }
+
+        /* Toggle */
+        .sw {
+            width: 46px; height: 23px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--glass-border);
+            border-radius: 50px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s;
+            flex-shrink: 0;
+        }
+
+        .sw::after {
+            content: '';
+            width: 15px; height: 15px;
+            background: var(--text-muted);
+            border-radius: 50%;
+            position: absolute;
+            top: 2px; left: 2px;
+            transition: all 0.3s;
+        }
+
+        .sw.on {
+            background: var(--accent-1);
+            border-color: var(--accent-1);
+            box-shadow: 0 0 10px rgba(var(--glow-1), 0.35);
+        }
+
+        .sw.on::after {
+            left: 25px;
+            background: var(--bg-primary);
+        }
+
+        /* About */
+        .abt-card {
+            padding: 25px 18px;
+            border-radius: 18px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .abt-card .ac-em { font-size: 2rem; margin-bottom: 6px; }
+
+        .abt-card h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.8rem;
+            color: var(--accent-2);
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .abt-card p {
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .abt-card .ac-tag {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+        }
+
+        .abt-card .ac-tag b {
+            color: var(--accent-1);
+            font-weight: 600;
+        }
+
+        /* ======================================================== */
+        /*              DETAIL PAGES                                */
+        /* ======================================================== */
+
+        .dtl-hero {
+            border-radius: 22px;
+            overflow: hidden;
+            margin-bottom: 40px;
+        }
+
+        .dtl-vis {
+            height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .dtl-vis-bg { position: absolute; top: 0; left: 0; right: 0; bottom: 0; }
+
+        .dtl-emoji {
+            font-size: 5.5rem;
+            position: relative;
+            z-index: 2;
+            filter: drop-shadow(0 6px 30px rgba(0,0,0,0.5));
+            animation: dtlBob 4s ease-in-out infinite;
+        }
+
+        @keyframes dtlBob {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .dtl-info {
+            padding: 25px;
+        }
+
+        .dtl-info .dtl-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.6rem;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+
+        .dtl-info .dtl-sub {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.55;
+            margin-bottom: 18px;
+        }
+
+        .dtl-meta {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .dtl-meta-box {
+            padding: 10px;
+            border-radius: 10px;
+            background: var(--glass-light);
+            border: 1px solid var(--glass-border);
+            text-align: center;
+        }
+
+        .dtl-meta-box .dm-em { font-size: 1rem; }
+
+        .dtl-meta-box .dm-lab {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.45rem;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .dtl-meta-box .dm-val {
+            font-size: 0.78rem;
+            color: var(--accent-1);
+            font-weight: 600;
+        }
+
+        /* Price cards */
+        .prc-card {
+            border-radius: 16px;
+            padding: 22px;
+            text-align: center;
+        }
+
+        .prc-card .prc-em { font-size: 1.8rem; margin-bottom: 6px; }
+
+        .prc-card h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.78rem;
+            color: var(--accent-1);
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
+
+        .prc-card .prc-desc {
+            color: var(--text-muted);
+            font-size: 0.72rem;
+            line-height: 1.35;
+            margin-bottom: 8px;
+        }
+
+        .prc-card .prc-tags {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-size: 0.6rem;
+        }
+
+        .prc-card .prc-tags span {
+            padding: 2px 7px;
+            border-radius: 6px;
+            border: 1px solid var(--glass-border);
+            color: var(--text-muted);
+        }
+
+        .prc-card .prc-price {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--accent-4);
+            margin-bottom: 10px;
+        }
+
+        .book-btn {
+            padding: 8px 18px;
+            border: 1px solid var(--accent-1);
+            background: transparent;
+            color: var(--accent-1);
+            border-radius: 9px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.54rem;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+
+        .book-btn:hover {
+            background: var(--accent-1);
+            color: var(--bg-primary);
+            box-shadow: 0 0 18px rgba(var(--glow-1), 0.3);
+        }
+
+        /* Process */
+        .proc-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            position: relative;
+        }
+
+        .proc-row::before {
+            content: '';
+            position: absolute;
+            top: 28px;
+            left: 16%;
+            width: 68%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-3), var(--accent-2));
+            z-index: 0;
+        }
+
+        .proc-card {
+            border-radius: 16px;
+            padding: 22px 15px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .proc-card .pc-num {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: var(--accent-1);
+            color: var(--bg-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 900;
+            margin: 0 auto 10px;
+            box-shadow: 0 0 15px rgba(var(--glow-1), 0.35);
+        }
+
+        .proc-card h4 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.72rem;
+            color: var(--accent-1);
+            margin-bottom: 6px;
+            letter-spacing: 1px;
+        }
+
+        .proc-card p {
+            color: var(--text-secondary);
+            font-size: 0.76rem;
+            line-height: 1.45;
+        }
+
+        /* ==================== MODAL ==================== */
+        .modal-bg {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0, 0, 0, 0.82);
+            backdrop-filter: blur(10px);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-bg.open {
+            display: flex;
+            animation: mFadeIn 0.3s;
+        }
+
+        @keyframes mFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-box {
+            background: var(--bg-solid);
+            border: 2px solid var(--accent-1);
+            border-radius: 22px;
+            padding: 35px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            position: relative;
+            animation: mSlide 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 50px rgba(var(--glow-1), 0.12);
+        }
+
+        @keyframes mSlide {
+            from { transform: translateY(-40px) scale(0.93); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .modal-x {
+            position: absolute;
+            top: 12px; right: 16px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-muted);
+            background: none;
+            border: none;
+            transition: all 0.3s;
+        }
+
+        .modal-x:hover { color: var(--accent-5); transform: rotate(90deg); }
+
+        .modal-box .mi { font-size: 3rem; margin-bottom: 10px; display: block; }
+
+        .modal-box h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+
+        .modal-box p {
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 18px;
+            white-space: pre-line;
+            font-size: 0.88rem;
+        }
+
+        .modal-form .mf-r { margin-bottom: 10px; text-align: left; }
+
+        .modal-form label {
+            display: block;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.55rem;
+            color: var(--text-muted);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .modal-form input,
+        .modal-form textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--glass-border);
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border-radius: 9px;
+            font-family: 'Exo 2', sans-serif;
+            font-size: 0.85rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .modal-form input:focus,
+        .modal-form textarea:focus {
+            border-color: var(--accent-1);
+            box-shadow: 0 0 8px rgba(var(--glow-1), 0.12);
+        }
+
+        .modal-form textarea { resize: vertical; min-height: 60px; }
+
+        .m-btn {
+            padding: 10px 25px;
+            border: 2px solid var(--accent-1);
+            background: transparent;
+            color: var(--accent-1);
+            border-radius: 11px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+        }
+
+        .m-btn:hover {
+            background: var(--accent-1);
+            color: var(--bg-primary);
+            box-shadow: 0 0 20px rgba(var(--glow-1), 0.3);
+        }
+
+        .m-btn-submit {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-3));
+            color: var(--bg-primary);
+            border-radius: 11px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.72rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .m-btn-submit:hover {
+            box-shadow: 0 0 25px rgba(var(--glow-1), 0.35);
+            transform: translateY(-2px);
+        }
+
+        /* ==================== FOOTER ==================== */
+        .foot {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 30px 18px;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .foot-ems { font-size: 1.6rem; margin-bottom: 6px; }
+
+        .foot p {
+            color: var(--text-muted);
+            font-size: 0.68rem;
+            line-height: 1.4;
+        }
+
+        .foot-hours {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-width: 550px;
+            margin: 12px auto;
+        }
+
+        .fh-box {
+            padding: 8px;
+            border-radius: 9px;
+            background: var(--bg-card);
+            border: 1px solid var(--glass-border);
+        }
+
+        .fh-box .fhl {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.45rem;
+            color: var(--text-muted);
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .fh-box .fhv {
+            font-size: 0.74rem;
+            color: var(--accent-1);
+            font-weight: 600;
+            margin-top: 1px;
+        }
+
+        .foot-tag {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.55rem;
+            color: var(--accent-1);
+            letter-spacing: 4px;
+            margin-top: 10px;
+        }
+
+        /* ==================== SCROLLBAR ==================== */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: var(--bg-primary); }
+        ::-webkit-scrollbar-thumb { background: var(--accent-1); border-radius: 3px; }
+
+        /* ==================== RESPONSIVE ==================== */
+        @media (max-width: 900px) {
+            .g3 { grid-template-columns: 1fr; }
+            .proc-row { grid-template-columns: 1fr; }
+            .proc-row::before { display: none; }
+            .topnav-inner { flex-direction: column; gap: 8px; }
+            .nav-group { flex-wrap: wrap; justify-content: center; }
+        }
+
+        @media (max-width: 600px) {
+            .nav-button { padding: 7px 12px; font-size: 0.58rem; }
+            .hero h1 { font-size: 1.8rem; }
+            .appview-body { padding: 12px 12px 35px; }
+            .hero-info { gap: 8px; }
+            .modal-box { padding: 25px 16px; }
+            .dtl-meta { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+            .gal-subs, .svc-minis { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="spaceCanvas"></canvas>
+
+    <div class="nebula-wrap" id="nebulaWrap">
+        <div class="neb-orb"></div>
+        <div class="neb-orb"></div>
+        <div class="neb-orb"></div>
+    </div>
+
+    <div class="float-wrap" id="floatWrap">
+        <span class="float-item" style="top:15%;font-size:2rem;animation-duration:30s">👽</span>
+        <span class="float-item" style="top:50%;font-size:2.3rem;animation-duration:36s;animation-delay:-10s">🛸</span>
+        <span class="float-item" style="top:80%;font-size:1.7rem;animation-duration:26s;animation-delay:-18s">🪐</span>
+    </div>
+
+    <!-- NAV -->
+    <nav class="topnav" id="topnav">
+        <div class="topnav-inner">
+            <div class="logo-group" onclick="goTo('garage')">
+                <div class="logo-icon">🔧</div>
+                <div>
+                    <div class="logo-text">SODHI'S</div>
+                    <div class="logo-sub">Intergalactic Garage</div>
+                </div>
+            </div>
+            <div class="nav-group">
+                <button class="back-button" id="backBtn" onclick="goBack()">← BACK</button>
+                <button class="nav-button on" id="navGarage" onclick="goTo('garage')">🏠 Garage</button>
+                <button class="nav-button" id="navServices" onclick="goTo('services')">🔧 Services</button>
+                <button class="nav-button" id="navSettings" onclick="goTo('settings')">⚙️ Settings</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ======================== VIEW: GARAGE ======================== -->
+    <div class="appview show" id="vGarage">
+        <div class="appview-body">
+
+            <!-- Sub 1: Hero + 3 info -->
+            <div class="hero">
+                <div class="ufo-box">
+                    <div class="ufo-glow"></div>
+                    <div class="ufo-emoji">🛸</div>
+                </div>
+                <h1>
+                    <span class="hl1">SODHI'S GARAGE</span>
+                    <span class="hl2">INTERGALACTIC</span>
+                </h1>
+                <p class="hero-tag">✨ Where Earthly Cars Meet Alien Technology ✨</p>
+                <p class="hero-slogan">"Oye Hoye! Balle Balle! Best Garage in the Galaxy!" 🚀</p>
+                <div class="hero-info g3">
+                    <div class="hi-box gc">
+                        <div class="hi-em">📍</div>
+                        <div class="hi-lab">Location</div>
+                        <div class="hi-val">Gokuldham, Mumbai</div>
+                    </div>
+                    <div class="hi-box gc">
+                        <div class="hi-em">📞</div>
+                        <div class="hi-lab">Contact</div>
+                        <div class="hi-val">+91-98765-SODHI</div>
+                    </div>
+                    <div class="hi-box gc">
+                        <div class="hi-em">👨‍🔧</div>
+                        <div class="hi-lab">Owner</div>
+                        <div class="hi-val">Roshan Singh Sodhi</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sep"></div>
+
+            <!-- Sub 2: Gallery — 3 cards × 3 subs -->
+            <div class="sec-head">
+                <span class="sh-icon">📸</span>
+                <span class="sh-title">Garage Gallery</span>
+                <span class="sh-sub">Cosmic Workshop Views</span>
+                <span class="sh-line"></span>
+            </div>
+            <div class="g3">
+                <div class="gal-card gc">
+                    <div class="gal-vis">
+                        <div class="gal-bg gbg1"></div>
+                        <div class="gal-stars">
+                            <span style="top:12%;left:22%;animation-delay:0.2s"></span>
+                            <span style="top:55%;left:68%;animation-delay:0.7s"></span>
+                            <span style="top:78%;left:38%;animation-delay:1.2s"></span>
+                        </div>
+                        <span class="gal-em">🏗️⚡</span>
+                        <span class="gal-badge b-green">REPAIR ZONE</span>
+                        <div class="gal-overlay">
+                            <h3>Main Repair Station</h3>
+                            <p>Hydraulic lifts &amp; alien scanners</p>
+                        </div>
+                    </div>
+                    <div class="gal-subs">
+                        <div class="gal-sub" onclick="showInfo('🔧','Hydraulic Lift Bay','4 alien-grade lifts that raise any vehicle from Nano to NASA shuttle!')">
+                            <div class="gs-em">🔧</div><div class="gs-lab">Lift Bay</div>
+                        </div>
+                        <div class="gal-sub" onclick="showInfo('🖥️','Diagnostic Lab','Alien OBD-X scanner reads 10,000+ fault codes across all makes!')">
+                            <div class="gs-em">🖥️</div><div class="gs-lab">Diag Lab</div>
+                        </div>
+                        <div class="gal-sub" onclick="showInfo('🧰','Tool Vault','3,000+ tools in anti-gravity cabinets. Wrenches from Earth, plasma cutters from Andromeda!')">
+                            <div class="gs-em">🧰</div><div class="gs-lab">Tool Vault</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gal-card gc">
+                    <div class="gal-vis">
+                        <div class="gal-bg gbg2"></div>
+                        <div class="gal-stars">
+                            <span style="top:18%;left:35%;animation-delay:0.4s"></span>
+                            <span style="top:52%;left:62%;animation-delay:0.9s"></span>
+                            <span style="top:75%;left:25%;animation-delay:1.4s"></span>
+                        </div>
+                        <span class="gal-em">🎨🌈</span>
+                        <span class="gal-badge b-pink">PAINT LAB</span>
+                        <div class="gal-overlay">
+                            <h3>Cosmic Paint Chamber</h3>
+                            <p>Dust-free nebula booth</p>
+                        </div>
+                    </div>
+                    <div class="gal-subs">
+                        <div class="gal-sub" onclick="showInfo('🎨','Paint Booth','Zero-dust environment with alien color-shift pigments!')">
+                            <div class="gs-em">🎨</div><div class="gs-lab">Booth</div>
+                        </div>
+                        <div class="gal-sub" onclick="showInfo('🔨','Dent Lab','PDR masters reshape metal without repainting — alien surgery for cars!')">
+                            <div class="gs-em">🔨</div><div class="gs-lab">Dent Lab</div>
+                        </div>
+                        <div class="gal-sub" onclick="showInfo('✨','Polish Bay','3-stage machine polishing + ceramic coating area. Mirror finish!')">
+                            <div class="gs-em">✨</div><div class="gs-lab">Polish Bay</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="gal-card gc">
+                    <div class="gal-vis">
+                        <div class="gal-bg gbg3"></div>
+                        <div class="gal-stars">
+                            <span style="top:20%;left:45%;animation-delay:0.5s"></span>
+                            <span style="top:60%;left:20%;animation-delay:1.0s"></span>
+                            <span style="top:82%;left:65%;animation-delay:1.5s"></span>
+                        </div>
+                        <span class="gal-em">☕🪑</span>
+                        <span class="gal-badge b-blue">LOUNGE</span>
+                        <div class="gal-overlay">
+                            <h3>Customer Lounge</h3>
+                            <p>Sodhi's famous lassi &amp; samosas</p>
+                        </div>
+                    </div>
+                    <div class="gal-subs">
+                        <div class="gal-sub" onclick="showInfo('☕','Chai Counter','Unlimited chai, lassi &amp; Sodhi wife special samosas!')">
+                            <div class="gs-em">☕</div><div class="gs-lab">Chai Bar</div>
+                        </div>
+                        <div class="gal-sub" onclick="showInfo('📺','Live View','Watch your car being repaired on 55-inch screens! Full CCTV!')">
+                            <div class="gs-em">📺</div><div class="gs-lab">Live View</div>
+                        </div>
+                        <div class="gal-sub" onclick="showInfo('🎮','Kids Zone','Gaming corner with alien-themed games. Kids play, parents relax!')">
+                            <div class="gs-em">🎮</div><div class="gs-lab">Kids Zone</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sep"></div>
+
+            <!-- Sub 3: Stats — 3 items -->
+            <div class="sec-head">
+                <span class="sh-icon">📊</span>
+                <span class="sh-title">Garage Stats</span>
+                <span class="sh-sub">Numbers From The Stars</span>
+                <span class="sh-line"></span>
+            </div>
+            <div class="g3">
+                <div class="stat-box gc">
+                    <span class="sb-bg">🚗</span>
+                    <div class="sb-em">🚗</div>
+                    <div class="sb-num" data-target="15000">0</div>
+                    <div class="sb-lab">Cars Repaired</div>
+                </div>
+                <div class="stat-box gc">
+                    <span class="sb-bg">⭐</span>
+                    <div class="sb-em">⭐</div>
+                    <div class="sb-num" data-target="4500">0</div>
+                    <div class="sb-lab">Happy Customers</div>
+                </div>
+                <div class="stat-box gc">
+                    <span class="sb-bg">🏆</span>
+                    <div class="sb-em">🏆</div>
+                    <div class="sb-num" data-target="25">0</div>
+                    <div class="sb-lab">Years Experience</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================== VIEW: SERVICES ======================== -->
+    <div class="appview" id="vServices">
+        <div class="appview-body">
+            <div class="sec-head">
+                <span class="sh-icon">🔧</span>
+                <span class="sh-title">Our Services</span>
+                <span class="sh-sub">Alien Tech · Earthly Prices</span>
+                <span class="sh-line"></span>
+            </div>
+
+            <!-- Sub 1: Mechanical — 3 services -->
+            <div class="sub-head">⚙️ MECHANICAL SERVICES</div>
+            <div class="g3">
+                <div class="svc-card gc" onclick="goTo('dtlEngine')">
+                    <div class="svc-banner"><div class="svc-bg sbg-a"></div><span class="svc-em">🔧⚡</span><span class="svc-ribbon">POPULAR</span></div>
+                    <div class="svc-body"><h3>Engine Repair</h3><p class="svc-desc">Complete diagnostics, overhaul &amp; tuning with alien fusion tech.</p><button class="svc-btn">View Details →</button></div>
+                    <div class="svc-minis">
+                        <div class="svc-mini"><div class="sm-em">🛢️</div><div class="sm-name">Oil Change</div><div class="sm-pr">₹1,200</div></div>
+                        <div class="svc-mini"><div class="sm-em">⏱️</div><div class="sm-name">Timing Belt</div><div class="sm-pr">₹3,500</div></div>
+                        <div class="svc-mini"><div class="sm-em">🔩</div><div class="sm-name">Overhaul</div><div class="sm-pr">₹15,000</div></div>
+                    </div>
+                </div>
+                <div class="svc-card gc" onclick="goTo('dtlTyre')">
+                    <div class="svc-banner"><div class="svc-bg sbg-a"></div><span class="svc-em">🛞🔩</span><span class="svc-ribbon" style="background:var(--accent-3)">VALUE</span></div>
+                    <div class="svc-body"><h3>Tyres &amp; Suspension</h3><p class="svc-desc">Zero-gravity smooth rides with laser alignment &amp; premium tyres.</p><button class="svc-btn">View Details →</button></div>
+                    <div class="svc-minis">
+                        <div class="svc-mini"><div class="sm-em">🎯</div><div class="sm-name">Alignment</div><div class="sm-pr">₹800</div></div>
+                        <div class="svc-mini"><div class="sm-em">⚖️</div><div class="sm-name">Balancing</div><div class="sm-pr">₹500</div></div>
+                        <div class="svc-mini"><div class="sm-em">🏎️</div><div class="sm-name">Suspension</div><div class="sm-pr">₹6,000</div></div>
+                    </div>
+                </div>
+                <div class="svc-card gc" onclick="goTo('dtlBrake')">
+                    <div class="svc-banner"><div class="svc-bg sbg-a"></div><span class="svc-em">🛑🔴</span><span class="svc-ribbon" style="background:var(--accent-5)">SAFETY</span></div>
+                    <div class="svc-body"><h3>Brakes &amp; Safety</h3><p class="svc-desc">Quantum-grade braking — stop faster than a UFO emergency landing.</p><button class="svc-btn">View Details →</button></div>
+                    <div class="svc-minis">
+                        <div class="svc-mini"><div class="sm-em">🔴</div><div class="sm-name">Brake Pads</div><div class="sm-pr">₹2,500</div></div>
+                        <div class="svc-mini"><div class="sm-em">💿</div><div class="sm-name">Disc Rotors</div><div class="sm-pr">₹4,000</div></div>
+                        <div class="svc-mini"><div class="sm-em">💧</div><div class="sm-name">Brake Fluid</div><div class="sm-pr">₹800</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sep"></div>
+
+            <!-- Sub 2: Exterior — 3 services -->
+            <div class="sub-head">🎨 EXTERIOR SERVICES</div>
+            <div class="g3">
+                <div class="svc-card gc" onclick="goTo('dtlPaint')">
+                    <div class="svc-banner"><div class="svc-bg sbg-b"></div><span class="svc-em">🎨🌈</span><span class="svc-ribbon" style="background:var(--accent-2);color:#fff">PREMIUM</span></div>
+                    <div class="svc-body"><h3>Body &amp; Paint</h3><p class="svc-desc">Nebula-grade paint, dent removal &amp; ceramic coating.</p><button class="svc-btn">View Details →</button></div>
+                    <div class="svc-minis">
+                        <div class="svc-mini"><div class="sm-em">🖌️</div><div class="sm-name">Full Repaint</div><div class="sm-pr">₹25,000</div></div>
+                        <div class="svc-mini"><div class="sm-em">🔨</div><div class="sm-name">Dent Fix</div><div class="sm-pr">₹2,000</div></div>
+                        <div class="svc-mini"><div class="sm-em">💎</div><div class="sm-name">Ceramic</div><div class="sm-pr">₹12,000</div></div>
+                    </div>
+                </div>
+                <div class="svc-card gc" onclick="goTo('dtlWash')">
+                    <div class="svc-banner"><div class="svc-bg sbg-b"></div><span class="svc-em">🧼💧</span><span class="svc-ribbon" style="background:var(--accent-6);color:#fff">SHINE</span></div>
+                    <div class="svc-body"><h3>Detailing &amp; Wash</h3><p class="svc-desc">Stardust particle wash with showroom-grade protection.</p><button class="svc-btn">View Details →</button></div>
+                    <div class="svc-minis">
+                        <div class="svc-mini"><div class="sm-em">🚿</div><div class="sm-name">Full Wash</div><div class="sm-pr">₹800</div></div>
+                        <div class="svc-mini"><div class="sm-em">✨</div><div class="sm-name">Polish</div><div class="sm-pr">₹1,500</div></div>
+                        <div class="svc-mini"><div class="sm-em">🛡️</div><div class="sm-name">PPF</div><div class="sm-pr">₹45,000</div></div>
+                    </div>
+                </div>
+                <div class="svc-card gc" onclick="goTo('dtlGlass')">
+                    <div class="svc-banner"><div class="svc-bg sbg-b"></div><span class="svc-em">🪟🔍</span><span class="svc-ribbon" style="background:var(--accent-4)">CLEAR</span></div>
+                    <div class="svc-body"><h3>Glass &amp; Tinting</h3><p class="svc-desc">Anti-UV alien tinting, windshield repair &amp; mirror replacement.</p><button class="svc-btn">View Details →</button></div>
+                    <div class="svc-minis">
+                        <div class="svc-mini"><div class="sm-em">🕶️</div><div class="sm-name">Full Tint</div><div class="sm-pr">₹5,000</div></div>
+                        <div class="svc-mini"><div class="sm-em">🪟</div><div class="sm-name">Windshield</div><div class="sm-pr">₹8,000</div></div>
+                        <div class="svc-mini"><div class="sm-em">🔍</div><div class="sm-name">Chip Fix</div><div class="sm-pr">₹1,200</div></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sep"></div>
+
+            <!-- Sub 3: Tech — 3 services -->
+            <div class="sub-head">⚡ TECH SERVICES</div>
+            <div class="g3">
+                <div class="svc-card gc" onclick="goTo('dtlElectric')">
+                    <div class="svc-banner"><div class="svc-bg sbg-c"></div><span class="svc-em">⚡💡</span><span class="svc-ribbon" style="background:var(--accent-4)">TECH</span></div>
+                    <div class="svc-body"><h3>Electrical Systems</h3><p class="svc-desc">Quantum circuit repair — battery, AC, wiring &amp; lights.</p><button class="svc-btn">View Details →</button></div>
+                    <div class="svc-minis">
+                        <div class="svc-mini"><div class="sm-em">🔋</div><div class="sm-name">Battery</div><div class="sm-pr">₹4,500</div></div>
+                        <div class="svc-mini"><div class="sm-em">❄️</div><div class="sm-name">AC Service</div><div class="sm-pr">₹1,800</div></div>
+                        <div class="svc-mini"><div class="sm-em">💡</div><div class="sm-name">LED Lights</div><div class="sm-pr">₹3,000</div></div>
+                    </div>
+                </div>
+                <div class="svc-card gc" onclick="goTo('dtlAudio')">
+                    <div class="svc-banner"><div class="svc-bg sbg-c"></div><span class="svc-em">🎵🔊</span><span class="svc-ribbon" style="background:var(--accent-2);color:#fff">AUDIO</span></div>
+                    <div class="svc-body"><h3>Audio &amp; Infotainment</h3><p class="svc-desc">Concert-grade audio, touchscreens &amp; dashcam install.</p><button class="svc-btn">View Details →</button></div>
+                    <div class="svc-minis">
+                        <div class="svc-mini"><div class="sm-em">🔊</div><div class="sm-name">Speakers</div><div class="sm-pr">₹8,000</div></div>
+                        <div class="svc-mini"><div class="sm-em">📱</div><div class="sm-name">Touchscreen</div><div class="sm-pr">₹12,000</div></div>
+                        <div class="svc-mini"><div class="sm-em">📹</div><div class="sm-name">Dashcam</div><div class="sm-pr">₹4,500</div></div>
+                    </div>
+                </div>
+                <div class="svc-card gc" onclick="goTo('dtlCustom')">
+                    <div class="svc-banner"><div class="svc-bg sbg-c"></div><span class="svc-em">🚀🛠️</span><span class="svc-ribbon" style="background:var(--accent-5);color:#fff">EXCLUSIVE</span></div>
+                    <div class="svc-body"><h3>Custom Mods</h3><p class="svc-desc">Alloys, exhaust, LED kits &amp; performance tuning.</p><button class="svc-btn">View Details →</button></div>
+                    <div class="svc-minis">
+                        <div class="svc-mini"><div class="sm-em">🏎️</div><div class="sm-name">Alloys</div><div class="sm-pr">₹25,000</div></div>
+                        <div class="svc-mini"><div class="sm-em">💨</div><div class="sm-name">Exhaust</div><div class="sm-pr">₹18,000</div></div>
+                        <div class="svc-mini"><div class="sm-em">🌈</div><div class="sm-name">LED Kit</div><div class="sm-pr">₹3,000</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================== VIEW: SETTINGS ======================== -->
+    <div class="appview" id="vSettings">
+        <div class="appview-body">
+            <div class="sec-head">
+                <span class="sh-icon">⚙️</span>
+                <span class="sh-title">Settings</span>
+                <span class="sh-sub">Customize Your Universe</span>
+                <span class="sh-line"></span>
+            </div>
+
+            <!-- Sub 1: Themes — 3 -->
+            <div class="sub-head">🎨 THEMES</div>
+            <div class="g3">
+                <div class="thm-card gc picked" id="tcDark" onclick="setTheme('dark')">
+                    <span class="tc-em">🌑</span>
+                    <div class="tc-dots"><span style="background:#00ff9d"></span><span style="background:#ff00ff"></span><span style="background:#00c8ff"></span></div>
+                    <h4 style="color:#00ff9d">Deep Space</h4>
+                    <p>Dark as the void. Easy on alien eyes.</p>
+                </div>
+                <div class="thm-card gc" id="tcLight" onclick="setTheme('light')">
+                    <span class="tc-em">☀️</span>
+                    <div class="tc-dots"><span style="background:#00885a"></span><span style="background:#aa00aa"></span><span style="background:#0077bb"></span></div>
+                    <h4 style="color:#0077bb">Solar Flare</h4>
+                    <p>Bright as a supernova! Clean view.</p>
+                </div>
+                <div class="thm-card gc" id="tcRetro" onclick="setTheme('retro')">
+                    <span class="tc-em">🌆</span>
+                    <div class="tc-dots"><span style="background:#ff6ec7"></span><span style="background:#ffd700"></span><span style="background:#00ffff"></span></div>
+                    <h4 style="color:#ff6ec7">Retro Nebula</h4>
+                    <p>80s synthwave neon. Bollywood vibes!</p>
+                </div>
+            </div>
+
+            <div class="sep"></div>
+
+            <!-- Sub 2: Preferences — 3 -->
+            <div class="sub-head">🎛️ PREFERENCES</div>
+            <div class="g3">
+                <div class="prf-card gc">
+                    <div class="prf-top">
+                        <h4><span class="pem">👽</span> Floating Aliens</h4>
+                        <div class="sw on" id="swAliens" onclick="toggleSw('aliens')"></div>
+                    </div>
+                    <p class="prf-desc">Show friendly alien emojis drifting across the screen. They come in peace!</p>
+                </div>
+                <div class="prf-card gc">
+                    <div class="prf-top">
+                        <h4><span class="pem">✨</span> Star Particles</h4>
+                        <div class="sw on" id="swStars" onclick="toggleSw('stars')"></div>
+                    </div>
+                    <p class="prf-desc">Animated twinkling stars with connecting lines in background.</p>
+                </div>
+                <div class="prf-card gc">
+                    <div class="prf-top">
+                        <h4><span class="pem">🌈</span> Nebula Glow</h4>
+                        <div class="sw on" id="swNebula" onclick="toggleSw('nebula')"></div>
+                    </div>
+                    <p class="prf-desc">Colorful nebula orbs floating for extra cosmic vibes.</p>
+                </div>
+            </div>
+
+            <div class="sep"></div>
+
+            <!-- Sub 3: About — 3 -->
+            <div class="sub-head">ℹ️ ABOUT</div>
+            <div class="g3">
+                <div class="abt-card gc" onclick="showInfo('🧔‍♂️','About Sodhi','Roshan Singh Sodhi\nChief Galactic Mechanic\n\n25 years fixing everything from Maruti to Mars Rovers.\n\n\"Oye hoye! Sab theek ho jaayegi! Balle balle!\" 🚀')">
+                    <div class="ac-em">🧔‍♂️</div>
+                    <h4>About Sodhi</h4>
+                    <p>The legendary mechanic of Gokuldham Society</p>
+                    <div class="ac-tag">Role: <b>Chief Galactic Mechanic</b></div>
+                </div>
+                <div class="abt-card gc" onclick="showInfo('📍','Find Our Garage','Gokuldham Society Compound\nPowder Gali, Goregaon East\nMumbai - 400063, Earth\n\nLandmark: Left past Abdul Shop\nLook for the UFO sign! 🛸')">
+                    <div class="ac-em">📍</div>
+                    <h4>Location</h4>
+                    <p>Heart of Gokuldham Society, Mumbai</p>
+                    <div class="ac-tag">City: <b>Mumbai, Earth</b></div>
+                </div>
+                <div class="abt-card gc" onclick="showInfo('🌐','Website Info','Version: v3.3.3 (Rule of Three)\nUpdated: Stardate 2025\nServer: Gokuldham-01\n\nBuilt with 💚 and Alien Technology')">
+                    <div class="ac-em">🌐</div>
+                    <h4>Website Info</h4>
+                    <p>Version details and credits</p>
+                    <div class="ac-tag">Version: <b>v3.3.3</b></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================== DETAIL VIEWS ======================== -->
+    <div class="appview" id="vDtlEngine"><div class="appview-body" id="bdEngine"></div></div>
+    <div class="appview" id="vDtlTyre"><div class="appview-body" id="bdTyre"></div></div>
+    <div class="appview" id="vDtlBrake"><div class="appview-body" id="bdBrake"></div></div>
+    <div class="appview" id="vDtlPaint"><div class="appview-body" id="bdPaint"></div></div>
+    <div class="appview" id="vDtlWash"><div class="appview-body" id="bdWash"></div></div>
+    <div class="appview" id="vDtlGlass"><div class="appview-body" id="bdGlass"></div></div>
+    <div class="appview" id="vDtlElectric"><div class="appview-body" id="bdElectric"></div></div>
+    <div class="appview" id="vDtlAudio"><div class="appview-body" id="bdAudio"></div></div>
+    <div class="appview" id="vDtlCustom"><div class="appview-body" id="bdCustom"></div></div>
+
+    <!-- FOOTER -->
+    <footer class="foot">
+        <div class="foot-ems">🛸🔧👽</div>
+        <p>© 2025 Sodhi's Intergalactic Garage — Gokuldham Society, Mumbai, Earth</p>
+        <div class="foot-hours">
+            <div class="fh-box"><div class="fhl">Mon — Sat</div><div class="fhv">9AM — 9PM</div></div>
+            <div class="fh-box"><div class="fhl">Sunday</div><div class="fhv">10AM — 6PM</div></div>
+            <div class="fh-box"><div class="fhl">Emergency</div><div class="fhv">24/7 🚨</div></div>
+        </div>
+        <p class="foot-tag">"OYE HOYE! BALLE BALLE!"</p>
+    </footer>
+
+    <!-- MODAL -->
+    <div class="modal-bg" id="modalBg">
+        <div class="modal-box">
+            <button class="modal-x" onclick="closeModal()">✕</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+    // ============ SERVICE DATA ============
+    var D = {
+        engine: {
+            emoji: '🔧⚡', bg: 'sbg-a',
+            title: 'Engine Repair & Overhaul',
+            sub: 'Complete engine diagnostics, repair and overhaul using alien fusion core technology. From oil changes to full rebuilds.',
+            meta: [{e:'⏱️',l:'Time',v:'2-8 Hrs'},{e:'🛡️',l:'Warranty',v:'6 Months'},{e:'⭐',l:'Rating',v:'4.9/5'}],
+            prices: [
+                {e:'🛢️',n:'Oil Change + Filter',d:'Premium synthetic oil with alien filtration',t:'30 min',w:'3 mo',p:'₹1,200'},
+                {e:'⏱️',n:'Timing Belt Replace',d:'OEM belt with tensioner and water pump',t:'2 hrs',w:'12 mo',p:'₹3,500'},
+                {e:'🔩',n:'Full Engine Overhaul',d:'Complete teardown and rebuild with quantum diagnostics',t:'2 days',w:'18 mo',p:'₹15,000'}
+            ],
+            steps: [
+                {t:'📋 Diagnostic Scan',d:'Alien OBD-X reads every fault code. Oye, gaadi kya boli rahi hai sun!'},
+                {t:'🔧 Expert Repair',d:'Certified techs with genuine parts. Every step tracked on galactic system.'},
+                {t:'🏁 Quality Test',d:'Full road test plus post-repair scan. Jab tak perfect na ho, jaayegi nahi!'}
+            ]
+        },
+        tyre: {
+            emoji: '🛞🔩', bg: 'sbg-a',
+            title: 'Tyres & Suspension',
+            sub: 'Zero-gravity smooth rides with laser alignment, computerized balancing and premium tyres for any terrain.',
+            meta: [{e:'⏱️',l:'Time',v:'30m-3hrs'},{e:'🛡️',l:'Warranty',v:'1 Year'},{e:'⭐',l:'Rating',v:'4.9/5'}],
+            prices: [
+                {e:'🎯',n:'3D Laser Alignment',d:'Camera-guided camber caster toe perfection',t:'45 min',w:'6 mo',p:'₹800'},
+                {e:'⚖️',n:'Wheel Balancing x4',d:'Computerized spin balance for zero vibration',t:'30 min',w:'3 mo',p:'₹500'},
+                {e:'🏎️',n:'Suspension Overhaul',d:'Shocks struts springs replaced for cloud comfort',t:'3 hrs',w:'12 mo',p:'₹6,000'}
+            ],
+            steps: [
+                {t:'🔍 Tread Check',d:'Digital depth measurement and wear pattern analysis by expert eyes.'},
+                {t:'📐 Precision Setup',d:'3D cameras plus alien GPS alignment — more accurate than Earth systems.'},
+                {t:'🏎️ Road Test',d:'Complete drive test — no vibrations, perfect handling. Glides like a UFO!'}
+            ]
+        },
+        brake: {
+            emoji: '🛑🔴', bg: 'sbg-a',
+            title: 'Brakes & Safety',
+            sub: 'Quantum-grade braking systems. Stop faster than a UFO emergency landing. Safety is priority number one.',
+            meta: [{e:'⏱️',l:'Time',v:'1-3 Hrs'},{e:'🛡️',l:'Warranty',v:'1 Year'},{e:'⭐',l:'Rating',v:'4.9/5'}],
+            prices: [
+                {e:'🔴',n:'Brake Pad Replacement',d:'Premium ceramic pads for quiet powerful stopping',t:'1 hr',w:'12 mo',p:'₹2,500'},
+                {e:'💿',n:'Disc Rotor Replacement',d:'Drilled and slotted rotors for heat dissipation',t:'2 hrs',w:'12 mo',p:'₹4,000'},
+                {e:'💧',n:'Brake System Flush',d:'Complete DOT4 racing fluid replacement',t:'45 min',w:'6 mo',p:'₹800'}
+            ],
+            steps: [
+                {t:'🔍 Brake Check',d:'Measure pad thickness, rotor condition, fluid quality. Every mm matters!'},
+                {t:'🔧 Component Swap',d:'OEM-spec parts installed with proper torque. No shortcuts with safety!'},
+                {t:'🛣️ Brake Test',d:'Emergency stop test, ABS check, bed-in procedure. Perfect brakes!'}
+            ]
+        },
+        paint: {
+            emoji: '🎨🌈', bg: 'sbg-b',
+            title: 'Body & Paint Works',
+            sub: 'Nebula-grade paint finishes, dent removal and ceramic coatings that outshine a supernova.',
+            meta: [{e:'⏱️',l:'Time',v:'1-5 Days'},{e:'🛡️',l:'Warranty',v:'2 Years'},{e:'⭐',l:'Rating',v:'4.8/5'}],
+            prices: [
+                {e:'🖌️',n:'Full Body Repaint',d:'Complete respray with alien color-shift pigments',t:'5 days',w:'24 mo',p:'₹25,000'},
+                {e:'🔨',n:'Dent Removal PDR',d:'Paintless dent repair — alien surgery for cars',t:'1 hr',w:'6 mo',p:'₹2,000'},
+                {e:'💎',n:'Ceramic Coating',d:'9H nano-ceramic shield with 3 year protection',t:'1 day',w:'36 mo',p:'₹12,000'}
+            ],
+            steps: [
+                {t:'📸 Damage Scan',d:'High-res scan of every imperfection. Evidence rakhna zaroori hai oye!'},
+                {t:'🎨 Paint Apply',d:'Multi-coat in dust-free nebula chamber. Primer base color 3x clear.'},
+                {t:'✨ Final Polish',d:'Machine cut, polish and ceramic sealant. Showroom finish guaranteed!'}
+            ]
+        },
+        wash: {
+            emoji: '🧼💧', bg: 'sbg-b',
+            title: 'Detailing & Car Wash',
+            sub: 'Stardust particle wash technology. Eco-friendly and mind-blowing. Basic wash to showroom detailing.',
+            meta: [{e:'⏱️',l:'Time',v:'1-5 Hrs'},{e:'🌱',l:'Eco',v:'Green Tech'},{e:'⭐',l:'Rating',v:'5.0/5'}],
+            prices: [
+                {e:'🚿',n:'Premium Full Wash',d:'Foam hand wash interior vacuum glass polish',t:'1 hr',w:'N/A',p:'₹800'},
+                {e:'✨',n:'Paint Correction',d:'Multi-stage polish to remove swirls and oxidation',t:'4 hrs',w:'3 mo',p:'₹5,000'},
+                {e:'🛡️',n:'PPF Full Body',d:'Self-healing paint protection film ultimate shield',t:'3 days',w:'5 yrs',p:'₹45,000'}
+            ],
+            steps: [
+                {t:'💧 Foam Soak',d:'Alien biodegradable foam dissolves dirt at molecular level. Safe for all!'},
+                {t:'🧤 Hand Detail',d:'Two-bucket microfiber wash. Every crevice treated with precision care.'},
+                {t:'✨ Protection',d:'Spray sealant or ceramic boost for lasting shine. Showroom teleportation!'}
+            ]
+        },
+        glass: {
+            emoji: '🪟🔍', bg: 'sbg-b',
+            title: 'Glass & Tinting',
+            sub: 'Anti-UV tinting from alien tech, windshield repair and replacements. Crystal clear vision on any planet.',
+            meta: [{e:'⏱️',l:'Time',v:'1-4 Hrs'},{e:'🛡️',l:'Warranty',v:'3 Years'},{e:'⭐',l:'Rating',v:'4.7/5'}],
+            prices: [
+                {e:'🕶️',n:'Full Car Tinting',d:'Anti-UV nano-ceramic tint blocks 99 percent UV',t:'3 hrs',w:'36 mo',p:'₹5,000'},
+                {e:'🪟',n:'Windshield Replace',d:'OEM-spec laminated glass with proper bonding',t:'2 hrs',w:'12 mo',p:'₹8,000'},
+                {e:'🔍',n:'Chip Repair',d:'Resin injection for small cracks invisible fix',t:'30 min',w:'6 mo',p:'₹1,200'}
+            ],
+            steps: [
+                {t:'📏 Assessment',d:'Precise measurements and damage mapping. Every crack documented digitally.'},
+                {t:'🔧 Installation',d:'Factory-spec installation with OEM adhesives. Perfect seal guaranteed.'},
+                {t:'✅ Quality Check',d:'Leak test, visibility check and final polish. Crystal clear on all planets!'}
+            ]
+        },
+        electric: {
+            emoji: '⚡💡', bg: 'sbg-c',
+            title: 'Electrical Systems',
+            sub: 'Quantum circuit repair for all vehicle electrics. Battery AC wiring and lighting. Alien tech finds invisible faults.',
+            meta: [{e:'⏱️',l:'Time',v:'1-4 Hrs'},{e:'🛡️',l:'Warranty',v:'6 Months'},{e:'⭐',l:'Rating',v:'4.7/5'}],
+            prices: [
+                {e:'🔋',n:'Battery Replacement',d:'Premium battery with terminal clean and load testing',t:'30 min',w:'24 mo',p:'₹4,500'},
+                {e:'❄️',n:'AC Complete Service',d:'Gas refill filter clean compressor check leak test',t:'1 hr',w:'6 mo',p:'₹1,800'},
+                {e:'💡',n:'LED Headlight Upgrade',d:'Premium LED conversion with correct beam alignment',t:'1 hr',w:'12 mo',p:'₹3,000'}
+            ],
+            steps: [
+                {t:'🔌 Circuit Scan',d:'Quantum multimeter checks every circuit. Problems invisible to Earth shops found!'},
+                {t:'⚡ Precision Fix',d:'OEM-spec components soldered and heat-shrunk. Zero shortcuts taken!'},
+                {t:'✅ Load Test',d:'Full electrical stress test. Every light motor and sensor verified perfect!'}
+            ]
+        },
+        audio: {
+            emoji: '🎵🔊', bg: 'sbg-c',
+            title: 'Audio & Infotainment',
+            sub: 'Concert-grade sound systems, Android Apple touchscreens and dashcam setups. Your car your concert hall.',
+            meta: [{e:'⏱️',l:'Time',v:'2-6 Hrs'},{e:'🛡️',l:'Warranty',v:'1 Year'},{e:'⭐',l:'Rating',v:'4.8/5'}],
+            prices: [
+                {e:'🔊',n:'Premium Speaker Set',d:'Component speakers plus subwoofer and amplifier',t:'4 hrs',w:'12 mo',p:'₹8,000'},
+                {e:'📱',n:'Touchscreen Head Unit',d:'Android Auto and Apple CarPlay enabled display',t:'2 hrs',w:'12 mo',p:'₹12,000'},
+                {e:'📹',n:'Dashcam Install',d:'Dual-channel dashcam with parking mode and cloud',t:'1 hr',w:'12 mo',p:'₹4,500'}
+            ],
+            steps: [
+                {t:'🎧 Sound Design',d:'Sodhi maps your car acoustics. Oye, music toh spaceship jaisa bajega!'},
+                {t:'🔧 Clean Install',d:'Hidden wiring, proper grounding, zero rattles. Factory-finish quality.'},
+                {t:'🎵 Sound Tuning',d:'Equalizer calibrated, sub dialed in, time alignment set. Pure bliss!'}
+            ]
+        },
+        custom: {
+            emoji: '🚀🛠️', bg: 'sbg-c',
+            title: 'Custom Modifications',
+            sub: 'Transform your ride into an intergalactic cruiser. Alloys exhausts LED kits and performance modifications.',
+            meta: [{e:'⏱️',l:'Time',v:'1-7 Days'},{e:'🛡️',l:'Warranty',v:'1 Year'},{e:'⭐',l:'Rating',v:'4.8/5'}],
+            prices: [
+                {e:'🏎️',n:'Alloy Wheel Package',d:'Premium alloys with tyres set of 4 mounted balanced',t:'2 hrs',w:'12 mo',p:'₹25,000'},
+                {e:'💨',n:'Performance Exhaust',d:'Cat-back system with resonator deep growl zero drone',t:'3 hrs',w:'12 mo',p:'₹18,000'},
+                {e:'🌈',n:'LED Underglow Kit',d:'Multi-color LED strips with app control music sync',t:'2 hrs',w:'12 mo',p:'₹3,000'}
+            ],
+            steps: [
+                {t:'💬 Design Chat',d:'Discuss your dream build over lassi. Spaceship banana hai? Done!'},
+                {t:'🔧 Expert Build',d:'Certified installers do clean work. No shortcuts, no loose wires.'},
+                {t:'🎬 Grand Reveal',d:'Sodhi unveils your modded ride with music and lights. Oye hoye!'}
+            ]
+        }
+    };
+
+    // ============ BUILD DETAIL PAGES ============
+    var viewMap = {
+        dtlEngine: 'engine', dtlTyre: 'tyre', dtlBrake: 'brake',
+        dtlPaint: 'paint', dtlWash: 'wash', dtlGlass: 'glass',
+        dtlElectric: 'electric', dtlAudio: 'audio', dtlCustom: 'custom'
+    };
+
+    function buildDetail(key) {
+        var s = D[key];
+        var elId = 'bd' + key.charAt(0).toUpperCase() + key.slice(1);
+        var el = document.getElementById(elId);
+        if (!el) return;
+
+        var metaH = '';
+        for (var i = 0; i < s.meta.length; i++) {
+            var m = s.meta[i];
+            metaH += '<div class="dtl-meta-box"><div class="dm-em">' + m.e + '</div><div class="dm-lab">' + m.l + '</div><div class="dm-val">' + m.v + '</div></div>';
+        }
+
+        var priceH = '';
+        for (var i = 0; i < s.prices.length; i++) {
+            var p = s.prices[i];
+            priceH += '<div class="prc-card gc"><div class="prc-em">' + p.e + '</div><h4>' + p.n + '</h4><p class="prc-desc">' + p.d + '</p><div class="prc-tags"><span>⏱️ ' + p.t + '</span><span>🛡️ ' + p.w + '</span></div><div class="prc-price">' + p.p + '</div><button class="book-btn" onclick="event.stopPropagation();openBooking(\'' + p.n.replace(/'/g, "\\'") + '\')">🚀 BOOK NOW</button></div>';
+        }
+
+        var stepH = '';
+        for (var i = 0; i < s.steps.length; i++) {
+            var st = s.steps[i];
+            stepH += '<div class="proc-card gc"><div class="pc-num">' + (i + 1) + '</div><h4>' + st.t + '</h4><p>' + st.d + '</p></div>';
+        }
+
+        el.innerHTML = '<div class="dtl-hero gc"><div class="dtl-vis"><div class="dtl-vis-bg ' + s.bg + '"></div><span class="dtl-emoji">' + s.emoji + '</span></div><div class="dtl-info"><h2 class="dtl-title">' + s.title + '</h2><p class="dtl-sub">' + s.sub + '</p><div class="dtl-meta">' + metaH + '</div></div></div><div class="sep"></div><div class="sec-head"><span class="sh-icon">💰</span><span class="sh-title">Pricing</span><span class="sh-sub">Transparent Galactic Rates</span><span class="sh-line"></span></div><div class="g3">' + priceH + '</div><div class="sep"></div><div class="sec-head"><span class="sh-icon">🔄</span><span class="sh-title">Our Process</span><span class="sh-sub">How Sodhi Gets It Done</span><span class="sh-line"></span></div><div class="proc-row">' + stepH + '</div>';
+    }
+
+    // Build all detail pages
+    var dKeys = Object.keys(D);
+    for (var i = 0; i < dKeys.length; i++) {
+        buildDetail(dKeys[i]);
+    }
+
+    // ============ NAVIGATION ============
+    var hist = ['garage'];
+    var cur = 'garage';
+
+    // Map view names to element IDs
+    var viewIds = {
+        garage: 'vGarage',
+        services: 'vServices',
+        settings: 'vSettings',
+        dtlEngine: 'vDtlEngine',
+        dtlTyre: 'vDtlTyre',
+        dtlBrake: 'vDtlBrake',
+        dtlPaint: 'vDtlPaint',
+        dtlWash: 'vDtlWash',
+        dtlGlass: 'vDtlGlass',
+        dtlElectric: 'vDtlElectric',
+        dtlAudio: 'vDtlAudio',
+        dtlCustom: 'vDtlCustom'
+    };
+
+    function goTo(name) {
+        // Hide all
+        var allViews = document.querySelectorAll('.appview');
+        for (var i = 0; i < allViews.length; i++) {
+            allViews[i].classList.remove('show');
+        }
+
+        // Show target
+        var targetId = viewIds[name];
+        if (targetId) {
+            document.getElementById(targetId).classList.add('show');
+        }
+
+        // Nav buttons
+        var allBtns = document.querySelectorAll('.nav-button');
+        for (var i = 0; i < allBtns.length; i++) {
+            allBtns[i].classList.remove('on');
+        }
+
+        var parentName = name;
+        if (name.indexOf('dtl') === 0) {
+            parentName = 'services';
+        }
+
+        var tabMap = {
+            garage: 'navGarage',
+            services: 'navServices',
+            settings: 'navSettings'
+        };
+
+        if (tabMap[parentName]) {
+            document.getElementById(tabMap[parentName]).classList.add('on');
+        }
+
+        // Back button
+        var bb = document.getElementById('backBtn');
+        if (name.indexOf('dtl') === 0) {
+            bb.classList.add('visible');
+        } else {
+            bb.classList.remove('visible');
+        }
+
+        // History
+        if (cur !== name) {
+            hist.push(name);
+            cur = name;
+        }
+
+        window.scrollTo({top: 0, behavior: 'smooth'});
+
+        if (name === 'garage') {
+            setTimeout(runStats, 400);
+        }
+    }
+
+    function goBack() {
+        if (hist.length > 1) {
+            hist.pop();
+            var prev = hist[hist.length - 1];
+            cur = prev;
+            goTo(prev);
+        }
+    }
+
+    // ============ THEME ============
+    function setTheme(t) {
+        document.documentElement.setAttribute('data-theme', t);
+
+        var allThm = document.querySelectorAll('.thm-card');
+        for (var i = 0; i < allThm.length; i++) {
+            allThm[i].classList.remove('picked');
+        }
+
+        var thmMap = {dark: 'tcDark', light: 'tcLight', retro: 'tcRetro'};
+        if (thmMap[t]) {
+            document.getElementById(thmMap[t]).classList.add('picked');
+        }
+
+        try { localStorage.setItem('sodhi-theme', t); } catch(e) {}
+    }
+
+    // ============ TOGGLES ============
+    var starsOn = true;
+
+    function toggleSw(key) {
+        var swMap = {aliens: 'swAliens', stars: 'swStars', nebula: 'swNebula'};
+        var el = document.getElementById(swMap[key]);
+        if (!el) return;
+
+        el.classList.toggle('on');
+        var isOn = el.classList.contains('on');
+
+        if (key === 'aliens') {
+            document.getElementById('floatWrap').style.display = isOn ? 'block' : 'none';
+        }
+        if (key === 'stars') {
+            starsOn = isOn;
+            if (!isOn) {
+                ctx.clearRect(0, 0, cvs.width, cvs.height);
+            }
+        }
+        if (key === 'nebula') {
+            document.getElementById('nebulaWrap').style.display = isOn ? 'block' : 'none';
+        }
+    }
+
+    // ============ STATS ============
+    function runStats() {
+        var els = document.querySelectorAll('.sb-num');
+        for (var i = 0; i < els.length; i++) {
+            (function(el) {
+                var target = parseInt(el.getAttribute('data-target'));
+                if (isNaN(target)) return;
+                var current = 0;
+                var step = target / 100;
+                var suffix = target > 100 ? '+' : '';
+                var timer = setInterval(function() {
+                    current += step;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    el.textContent = Math.floor(current).toLocaleString() + suffix;
+                }, 16);
+            })(els[i]);
+        }
+    }
+
+    // ============ MODAL ============
+    function showInfo(icon, title, text) {
+        var html = '<span class="mi">' + icon + '</span>';
+        html += '<h3>' + title + '</h3>';
+        html += '<p>' + text + '</p>';
+        html += '<button class="m-btn" onclick="closeModal()">Got It! 🚀</button>';
+        document.getElementById('modalContent').innerHTML = html;
+        document.getElementById('modalBg').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function openBooking(serviceName) {
+        var html = '<span class="mi">📅</span>';
+        html += '<h3>Book: ' + serviceName + '</h3>';
+        html += '<form class="modal-form" onsubmit="event.preventDefault();bookDone()">';
+        html += '<div class="mf-r"><label>Your Name</label><input placeholder="e.g. Jethalal Gada" required></div>';
+        html += '<div class="mf-r"><label>Phone</label><input placeholder="+91-XXXXX-XXXXX" required></div>';
+        html += '<div class="mf-r"><label>Vehicle</label><input placeholder="e.g. Maruti Swift" required></div>';
+        html += '<div class="mf-r"><label>Notes</label><textarea placeholder="Describe issue..."></textarea></div>';
+        html += '<button type="submit" class="m-btn-submit">🚀 CONFIRM BOOKING</button>';
+        html += '</form>';
+        document.getElementById('modalContent').innerHTML = html;
+        document.getElementById('modalBg').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function bookDone() {
+        var html = '<span class="mi">🎉</span>';
+        html += '<h3>Booking Confirmed!</h3>';
+        html += '<p>Oye hoye! Balle balle! Appointment book ho gaya!\nSodhi will call you soon.\nSee you at the garage! 🛸</p>';
+        html += '<button class="m-btn" onclick="closeModal()">Awesome! 🚀</button>';
+        document.getElementById('modalContent').innerHTML = html;
+    }
+
+    function closeModal() {
+        document.getElementById('modalBg').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    // Close modal on background click
+    document.getElementById('modalBg').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+
+    // ============ PARTICLES ============
+    var cvs = document.getElementById('spaceCanvas');
+    var ctx = cvs.getContext('2d');
+    var particles = [];
+    var mouseX = null;
+    var mouseY = null;
+
+    function resizeCvs() {
+        cvs.width = window.innerWidth;
+        cvs.height = window.innerHeight;
+    }
+
+    function makeParticles() {
+        particles = [];
+        var count = Math.min(Math.floor(cvs.width * cvs.height / 7000), 150);
+        for (var i = 0; i < count; i++) {
+            particles.push({
+                x: Math.random() * cvs.width,
+                y: Math.random() * cvs.height,
+                r: Math.random() * 1.4 + 0.3,
+                dx: (Math.random() - 0.5) * 0.22,
+                dy: (Math.random() - 0.5) * 0.22,
+                a: Math.random() * 0.5 + 0.3,
+                da: Math.random() * 0.012 + 0.004,
+                dir: 1
+            });
+        }
+    }
+
+    function drawFrame() {
+        if (!starsOn) {
+            requestAnimationFrame(drawFrame);
+            return;
+        }
+
+        ctx.clearRect(0, 0, cvs.width, cvs.height);
+
+        var style = getComputedStyle(document.documentElement);
+        var rgb = style.getPropertyValue('--particle-rgb');
+        if (!rgb) rgb = '0, 255, 157';
+        rgb = rgb.trim();
+
+        for (var i = 0; i < particles.length; i++) {
+            var p = particles[i];
+
+            p.x += p.dx;
+            p.y += p.dy;
+            p.a += p.da * p.dir;
+
+            if (p.a >= 1 || p.a <= 0.2) p.dir *= -1;
+            if (p.x < 0) p.x = cvs.width;
+            if (p.x > cvs.width) p.x = 0;
+            if (p.y < 0) p.y = cvs.height;
+            if (p.y > cvs.height) p.y = 0;
+
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(' + rgb + ',' + p.a + ')';
+            ctx.fill();
+
+            // Connect nearby particles
+            for (var j = i + 1; j < particles.length; j++) {
+                var q = particles[j];
+                var dx = p.x - q.x;
+                var dy = p.y - q.y;
+                var dist = Math.sqrt(dx * dx + dy * dy);
+                if (dist < 85) {
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(q.x, q.y);
+                    ctx.strokeStyle = 'rgba(' + rgb + ',' + (0.05 * (1 - dist / 85)) + ')';
+                    ctx.lineWidth = 0.4;
+                    ctx.stroke();
+                }
+            }
+
+            // Mouse connection
+            if (mouseX !== null) {
+                var mdx = p.x - mouseX;
+                var mdy = p.y - mouseY;
+                var md = Math.sqrt(mdx * mdx + mdy * mdy);
+                if (md < 120) {
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(mouseX, mouseY);
+                    ctx.strokeStyle = 'rgba(' + rgb + ',' + (0.1 * (1 - md / 120)) + ')';
+                    ctx.lineWidth = 0.5;
+                    ctx.stroke();
+                }
+            }
+        }
+
+        // Shooting star
+        if (Math.random() < 0.003) {
+            var sx = Math.random() * cvs.width;
+            var sy = Math.random() * cvs.height * 0.5;
+            var len = 35 + Math.random() * 50;
+            var grad = ctx.createLinearGradient(sx, sy, sx + len, sy + len * 0.4);
+            grad.addColorStop(0, 'rgba(' + rgb + ',0.6)');
+            grad.addColorStop(1, 'transparent');
+            ctx.beginPath();
+            ctx.moveTo(sx, sy);
+            ctx.lineTo(sx + len, sy + len * 0.4);
+            ctx.strokeStyle = grad;
+            ctx.lineWidth = 1;
+            ctx.stroke();
+        }
+
+        requestAnimationFrame(drawFrame);
+    }
+
+    window.addEventListener('resize', function() {
+        resizeCvs();
+        makeParticles();
+    });
+
+    window.addEventListener('mousemove', function(e) {
+        mouseX = e.clientX;
+        mouseY = e.clientY;
+    });
+
+    window.addEventListener('mouseout', function() {
+        mouseX = null;
+        mouseY = null;
+    });
+
+    resizeCvs();
+    makeParticles();
+    drawFrame();
+
+    // ============ NAV SCROLL ============
+    window.addEventListener('scroll', function() {
+        var nav = document.getElementById('topnav');
+        if (window.scrollY > 40) {
+            nav.classList.add('scrolled');
+        } else {
+            nav.classList.remove('scrolled');
+        }
+    });
+
+    // ============ KEYBOARD ============
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+        if (e.key === '1') goTo('garage');
+        if (e.key === '2') goTo('services');
+        if (e.key === '3') goTo('settings');
+    });
+
+    // ============ INIT ============
+    window.addEventListener('load', function() {
+        try {
+            var saved = localStorage.getItem('sodhi-theme');
+            if (saved) setTheme(saved);
+        } catch(e) {}
+        setTimeout(runStats, 500);
+    });
+    </script>
+</body>
+</html>
